@@ -1,0 +1,47 @@
+---
+- name: Install Rundeck with plugins
+  hosts: all
+  remote_user: ubuntu
+  become: yes
+  tasks:
+  - name: Update apt cache and install OpenJDK 8
+    apt:
+      name: openjdk-8-jdk
+      state: present
+      update_cache: yes
+
+  - name: Add Rundeck sourcelist
+    shell: echo "deb https://rundeck.bintray.com/rundeck-deb /" | sudo tee -a /etc/apt/sources.list.d/rundeck.list
+
+  - name: Add Rundeck apt-key
+    shell: curl 'https://bintray.com/user/downloadSubjectPublicKey?username=bintray' | sudo apt-key add -
+
+  - name: Install Rundeck
+    apt:
+      name: rundeck
+      force_apt_get: yes
+      update_cache: yes
+
+  - name: Start Rundeck service
+    service:
+      name: rundeckd
+      state: started
+      enabled: yes
+
+  - name: Import Ansible plugin
+    get_url:
+      url: https://github.com/Batix/rundeck-ansible-plugin/releases/download/3.1.1/ansible-plugin-3.1.1.jar
+      dest: /var/lib/rundeck/libext/ansible-plugin-3.1.1.jar
+      mode: '664'
+
+  - name: Import AWS EC2 nodes plugin
+    get_url:
+      url: https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/releases/download/v1.5.14/rundeck-ec2-nodes-plugin-1.5.14.jar
+      dest: /var/lib/rundeck/libext/rundeck-ec2-nodes-plugin-1.5.14.jar
+      mode: '664'
+
+  - name: Restart Rundeck service
+    service:
+      name: rundeckd
+      state: restarted
+...

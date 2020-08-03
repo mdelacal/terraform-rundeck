@@ -1,5 +1,5 @@
 variable "url" {
-  default = "http://localhost:4440"
+  default = "http://localhost:4444"
 }
 
 variable "api_version" {
@@ -7,6 +7,6 @@ variable "api_version" {
 }
 
 variable "auth_token" {
-  default = "V4vPQorsy5MzM0Ayof9D1ZQ2XDLgLxi5"
+  default = "h1kGcOpoZp8zpLUqa87xBTexoDjaJYI7"
 }
 
